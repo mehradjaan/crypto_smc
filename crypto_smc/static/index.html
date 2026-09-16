@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <title>SmartFlow — تحلیل تکنیکال و اسمارت‌مانی</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css?v=8" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <header class="top">
+    <div class="brand">
+      <div class="logo">SF</div>
+      <div>
+        <h1>SmartFlow</h1>
+        <p>تحلیل تکنیکال + اسمارت‌مانی · ۱م · ۵م · ۱۵م · ۳۰م · ۱س · ۴س</p>
+      </div>
+    </div>
+    <form id="search-form" class="search" autocomplete="off">
+      <input id="q" type="text" spellcheck="false"
+        placeholder="آدرس چارت تریدینگ‌ویو، لینک صرافی، یا نماد: BTCUSDT / بیتکوین" />
+      <button type="submit" id="go">تحلیل</button>
+    </form>
+  </header>
+
+  <div class="chips" id="chips">
+    <button data-q="BTCUSDT">BTC</button>
+    <button data-q="ETHUSDT">ETH</button>
+    <button data-q="SOLUSDT">SOL</button>
+    <button data-q="BNBUSDT">BNB</button>
+    <button data-q="XRPUSDT">XRP</button>
+    <button data-q="DOGEUSDT">DOGE</button>
+    <button data-q="TONUSDT">TON</button>
+    <button data-q="PEPEUSDT">PEPE</button>
+    <button data-q="https://www.tradingview.com/chart/?symbol=BINANCE:BTCUSDT">نمونه لینک TV</button>
+  </div>
+
+  <main id="app">
+    <section class="hero-empty" id="empty">
+      <h2>آدرس چارت یا نماد ارز را بدهید</h2>
+      <p>
+        برنامه کندل‌های زنده را از صرافی می‌گیرد و روی شش تایم‌فریم
+        (۱م، ۵م، ۱۵م، ۳۰م، ۱س، ۴س) ساختار بازار (BOS/CHoCH)، اردر بلاک، FVG،
+        نقدینگی، پرمیوم/دیسکانت و اندیکاتورهای کلاسیک را همزمان می‌خواند.
+      </p>
+    </section>
+
+    <div id="status" class="status hidden"></div>
+
+    <section id="result" class="hidden">
+      <div class="ticker">
+        <div>
+          <div class="sym" id="sym">—</div>
+          <div class="meta" id="meta">—</div>
+        </div>
+        <div class="px">
+          <div class="price" id="price">—</div>
+          <div class="chg" id="chg">—</div>
+        </div>
+        <div class="ticker-side">
+          <div class="range24" id="range24"></div>
+          <div class="refresh-bar" id="refresh-bar">
+            <span id="refresh-note">رفرش خودکار هر ۲ دقیقه</span>
+            <button type="button" class="ghost" id="refresh-now">الان تازه کن</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-top">
+        <div class="text-col">
+          <article class="card confluence">
+            <div class="card-h">
+              <h3>هم‌گرایی تایم‌فریم‌ها</h3>
+              <span class="pill" id="conf-pill">—</span>
+            </div>
+            <div class="conf-body">
+              <div class="gauge" id="gauge">
+                <div class="gauge-val" id="gauge-val">—</div>
+                <div class="gauge-sub">امتیاز وزنی</div>
+              </div>
+              <div>
+                <p class="headline" id="headline">—</p>
+                <div class="tf-row" id="tf-row"></div>
+              </div>
+            </div>
+            <div class="setup" id="setup"></div>
+          </article>
+
+          <article class="card narrative-card">
+            <div class="card-h">
+              <h3>گزارش متنی</h3>
+              <button type="button" class="ghost" id="copy-report">کپی گزارش</button>
+            </div>
+            <pre id="report" class="report"></pre>
+          </article>
+        </div>
+
+        <article class="card chart-card">
+          <div class="card-h">
+            <h3>چارت با لایه‌های SMC</h3>
+            <div class="tf-tabs" id="tf-tabs"></div>
+          </div>
+          <div id="chart" class="chart"></div>
+          <div class="legend">
+            <span class="lg fvg-b">FVG صعودی</span>
+            <span class="lg fvg-s">FVG نزولی</span>
+            <span class="lg ob-b">اردر بلاک صعودی</span>
+            <span class="lg ob-s">اردر بلاک نزولی</span>
+            <span class="lg ema">EMA ۲۱ / ۵۰</span>
+            <span class="zoom-hint">اسکرول موس: زوم · درگ: جابه‌جایی · دابل‌کلیک: نمای کامل</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="tf-panels" id="tf-panels"></div>
+
+      <p class="disclaimer" id="disclaimer"></p>
+    </section>
+
+    <section class="card glossary" id="glossary">
+      <div class="card-h">
+        <h3>راهنمای اصطلاحات — این عددها و رنگ‌ها یعنی چه؟</h3>
+      </div>
+      <div class="glossary-grid">
+        <article>
+          <h4>امتیاز هر تایم‌فریم (مثلاً ۴۳٫۲)</h4>
+          <p>عددی بین ۰ تا ۱۰۰ برای همان تایم است. حدود ۵۰ یعنی خنثی/رنج. بالاتر از ۵۸ تمایل صعودی، پایین‌تر از ۴۲ تمایل نزولی. این عدد سیگنال خرید/فروش قطعی نیست؛ جمع‌بندی ساختار + اندیکاتور همان تایم است.</p>
+        </article>
+        <article>
+          <h4>امتیاز وزنی چیست؟</h4>
+          <p>میانگین شش تایم‌فریم است که تایم بالاتر وزن بیشتری دارد: ۴ ساعته ۳۲٪، ۱ ساعته ۲۴٪، ۳۰ دقیقه ۱۶٪، ۱۵ دقیقه ۱۲٪، ۵ دقیقه ۱۰٪، ۱ دقیقه ۶٪. برای همین اگر ۱ دقیقه صعودی باشد ولی ۴ ساعته نزولی، امتیاز کل معمولاً نزولی می‌ماند.</p>
+        </article>
+        <article>
+          <h4>OB / اردر بلاک (Order Block)</h4>
+          <p>آخرین کندل مخالف قبل از یک حرکت قوی که ساختار را می‌شکند. اردر بلاک صعودی ناحیه تقاضای محتمل نهادهاست؛ نزولی ناحیه عرضه. مستطیل آبی/طلایی روی چارت همین است. وضعیت <b>تازه</b> یعنی هنوز لمس نشده، <b>لمس‌شده</b> یعنی قیمت برگشته داخلش، <b>باطل</b> یعنی کلوز از آن طرف عبور کرده.</p>
+        </article>
+        <article>
+          <h4>FVG / گپ ارزش منصفانه</h4>
+          <p>Fair Value Gap یعنی فاصلهٔ قیمتی بین سه کندل که بازار «جا خالی» گذاشته. قیمت اغلب بعداً برمی‌گردد تا این گپ را پر کند. مستطیل سبز/قرمز کم‌رنگ روی چارت FVG است.</p>
+        </article>
+        <article>
+          <h4>BOS و CHoCH</h4>
+          <p><b>BOS</b> (شکست ساختار) یعنی ادامهٔ روند: در صعود، کلوز بالای سقف قبلی. <b>CHoCH</b> (تغییر ماهیت) یعنی هشدار برگشت: در صعود، کلوز زیر کف قبلی. برچسب‌های BOS/CHoCH روی چارت همین رویدادها هستند.</p>
+        </article>
+        <article>
+          <h4>نقدینگی BSL و SSL</h4>
+          <p><b>BSL</b> نقدینگی خرید بالای سقف‌ها (استاپ فروشنده‌های شورت). <b>SSL</b> نقدینگی فروش زیر کف‌ها (استاپ خریدارها). <b>سوئیپ</b> یعنی سایه از آن سطح رد شود و کندل برگردد؛ اغلب سوخت حرکت بعدی است نه شکست واقعی.</p>
+        </article>
+        <article>
+          <h4>پرمیوم، دیسکانت، OTE</h4>
+          <p>در محدودهٔ بین آخرین سقف و کف مهم، بالای ۵۰٪ <b>پرمیوم</b> (گران) و پایین ۵۰٪ <b>دیسکانت</b> (ارزان) است. در روند صعودی معمولاً دنبال خرید در دیسکانت می‌گردند. <b>OTE</b> ناحیه ۰٫۶۲ تا ۰٫۷۹ فیبوناچی همان محدوده است.</p>
+        </article>
+        <article>
+          <h4>EMA، RSI، MACD، ADX</h4>
+          <p><b>EMA ۲۱/۵۰</b> میانگین متحرک؛ اگر کوتاه‌مدت بالای بلندمدت باشد چینش صعودی است. <b>RSI</b> بالای ۷۰ اشباع خرید، زیر ۳۰ اشباع فروش. <b>MACD</b> مومنتوم و کراس. <b>ADX</b> قدرت روند: پایین یعنی بازار رنج است و امتیاز به سمت خنثی کشیده می‌شود.</p>
+        </article>
+      </div>
+      <p class="glossary-note">خروجی آموزشی است، نه توصیه مالی. ۱ دقیقه و ۵ دقیقه نویز زیادی دارند؛ اولویت با ۴ ساعته و ۱ ساعته است.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="foot-inner">
+      <p class="foot-dev">برنامه‌نویس: <strong>مهراد چناقچی</strong></p>
+      <p class="foot-links">
+        Instagram:
+        <a href="https://instagram.com/mehrad_chenaghchi_1990" target="_blank" rel="noopener">mehrad_chenaghchi_1990</a>
+        <span class="dot">·</span>
+        <a href="mailto:mehrad.chenaghchi@gmail.com">mehrad.chenaghchi@gmail.com</a>
+        <span class="dot">·</span>
+        Contact me with
+        <a href="tel:09355277636" dir="ltr">09355277636</a>
+      </p>
+      <p class="foot-risk">
+        سرمایه شما همیشه در معرض نابودی است. مسئولیت هرگونه استفاده با شخص معامله‌گر می‌باشد.
+        تحلیل‌های این برنامه صرفاً راهنما هستند. به هیچ عنوان سرمایه خود را در معرض خطر قرار ندهید.
+      </p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="/static/app.js?v=8"></script>
+</body>
+</html>
